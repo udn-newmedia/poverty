@@ -5,3 +5,29 @@ html, body {
     word-wrap: break-word;
     text-align: justify;
 }
+
+#cover{
+    background: transparent;
+}
+
+#back{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transition: all 1s ease;
+}
+
+#back2{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transition: all 1s ease;
+}
+
+.blank{
+    height: 100vh;
+}

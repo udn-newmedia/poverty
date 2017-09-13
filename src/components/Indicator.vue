@@ -7,7 +7,29 @@
 <script>
 export default {
     name: 'indicator',
-    props: ['color', 'progress', 'opacity'],
+    props: ['color'],
+    data: function(){
+        return{
+            progress: 0,
+            opacity: 0
+        }
+    },
+    mounted: function(){
+        window.addEventListener('scroll', this.handleScroll);
+    },
+    methods: {
+        handleScroll: function(event){
+            let currentH = event.srcElement.body.scrollTop
+            let totalH = event.srcElement.body.clientHeight - window.innerHeight
+            this.progress = ((currentH / totalH) * 100).toFixed(2)
+            if(event.srcElement.body.scrollTop < window.innerHeight / 2){
+                this.opacity = 0
+            }
+            else{
+                this.opacity = 1
+            }
+        }
+    }
 }
 </script>
 
@@ -28,7 +50,7 @@ export default {
     }
     @media screen and (max-width: 1024px){
         #indicator {
-            height: 6px;
+            height: 4px;
         }
         #indicator-bar {
             height: 4px;
@@ -39,7 +61,7 @@ export default {
             height: 6px;
         }
         #indicator-bar {
-            height: 4px;
+            height: 6px;
         }
     }
     
