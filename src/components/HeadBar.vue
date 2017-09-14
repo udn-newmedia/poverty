@@ -1,5 +1,5 @@
 <template>
-    <div id="head-bar" v-bind:style="{opacity: opacity}">
+    <div id="head-bar" v-bind:style="{opacity: opacity, top: top + 'px'}">
         <div id="icon">
             <a href="."><img src="https://udn.com/upf/newmedia/image/udn.png"></a>
         </div>
@@ -11,7 +11,8 @@ export default {
     name: 'headbar',
     data: function(){
         return {
-            opacity: 1
+            opacity: 1,
+            top: 0
         }
     },
     mounted: function () {
@@ -21,9 +22,11 @@ export default {
         handleScroll: function(event){
             if(event.srcElement.body.scrollTop < window.innerHeight / 2){
                 this.opacity = 0.9
+                this.top = 0
             }
             else{
-                this.opacity = 0
+                this.opacity = 0.9
+                this.top = 4
             }
         }
     }

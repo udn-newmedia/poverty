@@ -49,7 +49,7 @@ li {
 
 .hello{
   height: 10000px;
-  background: #FFFFFF;
+  background-color: #ECEAEA;
 }
 
 a {

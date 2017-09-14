@@ -31,3 +31,7 @@ html, body {
 .blank{
     height: 100vh;
 }
+
+.content{
+    background-color: #ECEAEA;
+}
