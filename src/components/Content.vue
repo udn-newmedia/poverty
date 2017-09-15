@@ -11,12 +11,21 @@ export default {
 </script>
 
 <style scoped>
-    
+    h2{
+        text-align: left;
+        font-size: 30px;
+        font-weight: bold;
+        line-height: 1.5;
+        margin: 0;
+    }
     p{
         font-size: 21px;
         margin: 0;
     }
     @media screen and (max-width: 767px){
+        h2{
+            font-size: 26px;
+        }
         p{
             font-size: 18px;
             line-height: 32px;
@@ -26,6 +35,9 @@ export default {
         }
     }
     @media screen and (min-width: 768px) and (max-width: 1024px){
+        h2{
+            font-size: 26px;
+        }
         p{
             font-size: 20px;
             line-height: 32px;

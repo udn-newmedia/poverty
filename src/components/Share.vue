@@ -16,6 +16,9 @@ export default {
 </script>
 
 <style scoped>
+    #share-block{
+        height: 28px;
+    }
     .fb-like-block{
         float: left;
     }
