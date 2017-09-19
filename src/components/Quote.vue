@@ -24,9 +24,14 @@ export default {
         border-bottom: dotted 1px #DCDDDD;
         display: flex;
         justify-content: center;
-        align-items: flex-end;
+        align-items: center;
         flex-direction: column;
         min-height: 125px;
         position: relative;
+    }
+    @media screen and (max-width: 1024px){
+        .quote-contain{
+            align-items: flex-end;
+        }
     }
 </style>

@@ -35,6 +35,12 @@ export default {
         }
     }
     @media screen and (min-width: 768px) and (max-width: 1024px){
+        .container{
+            width: 100%;
+        }
+        .content{
+            padding: 64px 100px;
+        }
         h2{
             font-size: 26px;
         }
@@ -42,7 +48,11 @@ export default {
             font-size: 20px;
             line-height: 32px;
         }
-        
+    }
+    @media screen and (min-width: 1025px){
+        .container{
+            width: 800px;
+        }
     }
     
     

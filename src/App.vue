@@ -3,7 +3,6 @@
 		<Indicator />
 		<HeadBar />
 		<Cover title="貧窮世襲<br />被遺忘的孩子" title-bottom="65" title-left="40" title-width="270" title-height="95"/>
-		<div class="blank"></div>
 		<Content-Text>
 			<p>從車站到學校，沿途都是荒煙蔓草，雜草比人高，幾乎把車道掩埋。在這裡，有個小女孩住在貨櫃屋裡。</p>
 			<p><br/></p>
@@ -145,8 +144,15 @@
 		</ContentText>
 		<canvas id="back" ></canvas>
 		<canvas id="back2" ></canvas>
-		<video id="video1" class="hidden" src="./assets/mobile/video1.mp4" muted playsinline/>
 		<video id="video2" class="hidden" src="./assets/mobile/video2.mp4" muted playsinline/>
+		<div id="video-state-contain">
+			<div id="video-volume">
+				<img id="volume-img">
+				<canvas id="volume" width="40" height="40"></canvas>
+			</div>
+			<canvas id="video-state" width="40" height="40"></canvas>
+			<i class="fa fa-repeat"></i>
+		</div>
 	</div>
 </template>
 
@@ -177,15 +183,23 @@ import pic10_mobile from './assets/mobile/pic10.jpg'
 import pic11_mobile from './assets/mobile/pic11.jpg'
 
 import bg_mobile from './assets/bg_mobile.jpg'
+import bg from './assets/bg.jpg'
 
-var canvas
-var ctx
-var canvas2
-var ctx2
-var counter2
-var video1, video2
+import on from './assets/on.svg'
+import off from './assets/off.svg'
+
+var ctx, ctx2
+var canvas, canvas2, canvas3, canvas4
+var video2
+var video_state, volume
 var t = new Image()
-t.src = bg_mobile
+if(window.innerWidth <= 1024){
+	t.src = bg_mobile
+}
+else{
+	t.src = bg
+}
+
 var pic3, pic4
 var chart_flag = false
 var animation
@@ -207,20 +221,59 @@ export default {
 		}
 	},
 	mounted: function(){
+		let h = window.innerHeight
+		let w = window.innerWidth
 		window.addEventListener('scroll', this.handleScroll)
-		$('#back').prop('width', 375)
-		$('#back').prop('height', 667)
-		$('#back2').prop('width', 375)
-		$('#back2').prop('height', 667)
+		if(w <= 1024){
+			$('#back').prop('width', 375)
+			$('#back').prop('height', 667)
+			$('#back2').prop('width', 375)
+			$('#back2').prop('height', 667)
+		}
+		else{
+			$('#back').prop('width', 1280)
+			$('#back').prop('height', 720)
+			$('#back2').prop('width', 1280)
+			$('#back2').prop('height', 720)
+		}
+		
+		$('#volume-img').attr('src', off)
 		canvas = document.getElementById('back');
 		ctx = canvas.getContext('2d');
 		ctx.font = '15px microsoft jhenghei'
 		canvas2 = document.getElementById('back2');
 		ctx2 = canvas2.getContext('2d');
-		video1 = document.getElementById("video1");
 		video2 = document.getElementById("video2");
+		canvas3 = document.getElementById('video-state');
+    	video_state = canvas3.getContext('2d');
+		video_state.lineWidth = 3
+		canvas4 = document.getElementById('volume');
+    	volume = canvas4.getContext('2d');
+		volume.lineWidth = 3
+		volume.beginPath();
+		volume.arc(20, 20,17.5, 0, 2 * Math.PI);
+		volume.strokeStyle = '#A5A3A3';
+		volume.stroke();
+		$('.fa-repeat').click(function(){
+			video2.currentTime = 0;
+		})
+		$('#volume-img').click(function(){
+			if($(this).attr('src') == off){
+				$(this).attr('src', on)
+				video2.muted = false
+			}
+			else{
+				$(this).attr('src', off)
+				video2.muted = true
+			}
+		})
 		t.addEventListener('load', function(){
-			ctx.drawImage(t, 0, 0, 720, 1280, 0, 0, 375, 667);
+			if(w <= 1024){
+				ctx.drawImage(t, 0, 0, 720, 1280, 0, 0, 375, 667);
+			}
+			else{
+				ctx.drawImage(t, 0, 0, 1280, 720, 0, 0, 1280, 720);
+			}
 		}, false)
 		pic3 = new Image()
 		pic3.src= pic3_mobile
@@ -234,15 +287,19 @@ export default {
 			path: './static/data.json'
 		})
 		FB.XFBML.parse()
+		
 	},
 	methods: {
 		handleScroll: function(event){
 			let h = window.innerHeight
+			let w = window.innerWidth
 			let scroll_now = event.srcElement.body.scrollTop
 			let cross1 = $('#cross-1').offset().top
 			let cross2 = $('#cross-2').offset().top
 			let cross3 = $('#cross-3').offset().top
 			let chart = $('#chart-contain').offset().top
+			$('.blank').css('height', h+'px')
+			$('#cover').css('height', h+'px')
 			if(scroll_now > chart - h && scroll_now < chart){
 				if(!chart_flag){
 					$('#chart').css('opacity', 1)
@@ -251,75 +308,47 @@ export default {
 				}
 			}
 			if(scroll_now < h * 3 / 4){
-				if(!video1.paused){
-					video1.pause()
-					clearInterval(this.counter)
-					this.counter = null
+				if(w <= 1024){
+					ctx.drawImage(t, 0, 0, 720, 1280, 0, 0, 375, 667);
 				}
-				ctx.drawImage(t, 0, 0, 720, 1280, 0, 0, 375, 667);
+				else{
+					ctx.drawImage(t, 0, 0, 1280, 720, 0, 0, 1280, 720);
+				}
 				$('#back').css('visibility', 'visible')
 				$('#back').css('opacity', 1)
 				$('#back2').css('opacity', 0)
 				$('#back2').css('visibility', 'hidden')
 				console.log(2)
 			}	
-			else if(scroll_now >= h * 3 / 4 && scroll_now < h * 7 / 4){
-				if(video1.paused){
-					video1.play()
-				}
-				if(this.counter == null){
-					this.counter = setInterval(function(){
-						console.log('video1')
-						ctx2.clearRect(0, 0, 375, 667)
-						ctx2.drawImage(video1, 0, 0, 374, 666, 0, 0, 375, 667)
-					}, 33)
-				}
-				$('#back').css('visibility', 'hidden')
-				$('#back2').css('visibility', 'visible')
-				$('#back').css('opacity', 0)
-				$('#back2').css('opacity', 1)
-				console.log(3)
-			}
-			else if(scroll_now >= h * 7 / 4 && scroll_now < cross1 - (h + 200)){
-				if(!video1.paused){
-					video1.pause()
-					clearInterval(this.counter)
-					this.counter = null
-				}
-				$('#back').css('visibility', 'hidden')
-				$('#back2').css('visibility', 'hidden')
-				$('#back').css('opacity', 0)
-				$('#back2').css('opacity', 0)
-				console.log(45)
-			}
 			else if(scroll_now >= cross1 - (h + 200) && scroll_now < cross2 - h){
 				$('#back').css('visibility', 'visible')
 				$('#back').css('opacity', 1)
 				ctx.drawImage(pic3, 0, 0, 720, 1280, 0, 0, 375, 667)
-				ctx.rect(0, 637, 375, 667)
+				ctx.rect(0, 607, 375, 30)
 				ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'
 				ctx.fill()
 				ctx.fillStyle = '#FFFFFF'
-				ctx.fillText('貨櫃屋裡滿是撿來的二手家具。', 20, 657)
+				ctx.fillText('貨櫃屋裡滿是撿來的二手家具。', 20, 627)
 				console.log(5)
 			}
 			else if(scroll_now >= cross2 - h && scroll_now < cross2 + h){
 				console.log(scroll_now, cross2)
-				$('#back2').css('opacity', 1)
+				$('#back').css('opacity', 1)
 				$('#back').css('visibility', 'visible')
 				var temp = (cross2 - scroll_now) / h.toFixed(2)
 				ctx.drawImage(pic4, 0, 0, 720, 1280, 0, 0, 375, 667)
 				ctx.drawImage(pic3, 0, 0, 720, 1280*temp, 0, 0, 375, 667*temp)
-				ctx.rect(0, 637, 375, 667)
+				ctx.rect(0, 607, 375, 30)
 				ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'
 				ctx.fill()
 				ctx.fillStyle = '#FFFFFF'
-				ctx.fillText('今年7月中改善後的貨櫃屋，四周鐵皮加裝了隔熱牆。', 20, 657)
+				ctx.fillText('今年7月中改善後的貨櫃屋，四周鐵皮加裝了隔熱牆。', 20, 627)
 				console.log(6)
 			}
 			else if(scroll_now >= cross3 - h*2 && scroll_now < cross3 - h){
 				$('#back2').css('opacity', 0)
 				$('#back2').css('visibility', 'hidden')
+				$('#video-state-contain').css('opacity', 0)
 				if(!video2.paused){
 					video2.pause()
 					clearInterval(this.counter)
@@ -328,6 +357,7 @@ export default {
 			}
 			else if(scroll_now >= cross3 - h && scroll_now < cross3){
 				console.log(99)
+				$('#video-state-contain').css('opacity', 1)
 				if(video2.paused){
 					video2.play()
 				}
@@ -336,13 +366,29 @@ export default {
 						console.log('video2')
 						ctx2.clearRect(0, 0, 375, 667)
 						ctx2.drawImage(video2, 0, 0, 374, 666, 0, 0, 375, 667)
+						var progress = video2.currentTime / video2.duration
+						// console.log(progress)
+						video_state.clearRect(0, 0, 40, 40)
+
+						video_state.beginPath();
+						video_state.arc(20, 20,17.5, 0, 2 * Math.PI);
+						video_state.strokeStyle = '#A5A3A3';
+						video_state.stroke();
+
+						video_state.beginPath();
+						video_state.arc(20,20,17.5,-0.5 * Math.PI, (2 * progress - 0.5) * Math.PI);
+						video_state.strokeStyle = "#FF4612";
+						video_state.stroke();
 					}, 33)
 				}
+				$('#back').css('visibility', 'hidden')
+				$('#back').css('opacity', 0)
 				$('#back2').css('visibility', 'visible')
 				$('#back2').css('opacity', 1)
 			}
 			else if(scroll_now >= cross3 && scroll_now < cross3 + h){
 				console.log(77)
+				$('#video-state-contain').css('opacity', 0)
 				ctx2.clearRect(0, 0, 375, 667)
 				ctx2.drawImage(video2, 0, 0, 374, 666, 0, 0, 375, 667)
 				if(!video2.paused){

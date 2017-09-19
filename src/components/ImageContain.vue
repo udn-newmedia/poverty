@@ -18,7 +18,13 @@ export default {
     },
     computed: {
         containHeight: function(){
-            return this.height * window.innerWidth / this.width + 'px'
+            if(window.innerWidth < 768){
+                return this.height * window.innerWidth / this.width + 'px'
+            }
+            else{
+                return this.height * (window.innerWidth-200) / this.width + 'px'
+            }
+            
         }
     }
 }
@@ -34,5 +40,16 @@ export default {
         font-size: 15px;
         color: gray;
         margin-top: 5px;
+    }
+    @media screen and (min-width: 768px) and (max-width: 1024px){
+        img{
+            width: calc(100% - 200px);
+            margin-left: 0;
+        }
+    }
+    @media screen and (min-width: 1025px){
+        img{
+            width: 800px;
+        }
     }
 </style>
